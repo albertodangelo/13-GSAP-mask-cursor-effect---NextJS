@@ -44,9 +44,12 @@ export default function Home() {
       }}
     >
       <main className={styles.main}>
-        <div style={{ position: 'fixed', top: 10, left: 10, background: 'white', padding: '10px', zIndex: 1000 }}>
+      <nav>
+        <img src="./logo.png" alt="Logo" />
+      </nav>
+        {/* <div style={{ position: 'fixed', top: 10, left: 10, background: 'white', padding: '10px', zIndex: 1000 }}>
           Mouse: {x}, {y} | Hovered: {isHovered ? 'Yes' : 'No'}
-        </div>
+        </div> */}
 
         <div 
           ref={maskRef}
@@ -56,13 +59,13 @@ export default function Home() {
             onMouseEnter={() => setIsHovered(true)} 
             onMouseLeave={() => setIsHovered(false)}
           >
-            Ein visueller Effekt für den Cursor für Entwickler, die noch nicht von KI ersetzt wurden.
+            Ich unterstütze Sie dabei: <a className={styles.mailto} href="mailto:info@dangelodesign.ch">dangelodesign.ch</a>
           </p>
         </div>
         
         <div className={styles.body}>
           <p>
-          Wichtig für einen <span>digital Designer</span> sind hohe Qualitätsstandards und erfolgreich Umsetzung von digitalen Nutzererfahrungen.
+          Wichtig für Ihren <span>digitalen Auftritt</span> sind Effekte und Animationen, die überzeugen.
           </p>
         </div>
       </main>
