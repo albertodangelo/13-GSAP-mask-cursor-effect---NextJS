@@ -6,24 +6,88 @@ import { gsap } from "gsap";
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTouching, setIsTouching] = useState(false);
   const maskRef = useRef(null);
   
-  const handleMouseMove = (e) => {
-    const newX = e.clientX;
-    const newY = e.clientY;
-    setMousePosition({ x: newX, y: newY });
+  // Prüfe ob mobile Device und füge Touch-Listener hinzu
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
     
-    // GSAP Animation für die Mask-Position
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    // Touch-Events mit { passive: false } für preventDefault
+    const container = document.querySelector('[data-touch-container]');
+    if (container) {
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (container) {
+        container.removeEventListener('touchmove', handleTouchMove);
+      }
+    };
+  }, [isMobile, isTouching]);
+  
+  const updateMaskPosition = (x, y) => {
     if (maskRef.current) {
-      const size = isHovered ? 400 : 40;
+      const size = (isMobile && isTouching) || isHovered ? 400 : 40;
       gsap.to(maskRef.current, {
         duration: 0.3,
         ease: "back.out(1.7)",
         css: {
-          WebkitMaskPosition: `${newX - size/2}px ${newY - size/2}px`,
-          maskPosition: `${newX - size/2}px ${newY - size/2}px`,
+          WebkitMaskPosition: `${x - size/2}px ${y - size/2}px`,
+          maskPosition: `${x - size/2}px ${y - size/2}px`,
           WebkitMaskSize: `${size}px`,
           maskSize: `${size}px`
+        }
+      });
+    }
+  };
+  
+  const handleMouseMove = (e) => {
+    if (isMobile) return;
+    
+    const newX = e.clientX;
+    const newY = e.clientY;
+    setMousePosition({ x: newX, y: newY });
+    updateMaskPosition(newX, newY);
+  };
+  
+  const handleTouchStart = (e) => {
+    if (!isMobile) return;
+    setIsTouching(true);
+    const touch = e.touches[0];
+    const x = touch.clientX;
+    const y = touch.clientY;
+    setMousePosition({ x, y });
+    updateMaskPosition(x, y);
+  };
+  
+  const handleTouchMove = (e) => {
+    if (!isMobile) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const x = touch.clientX;
+    const y = touch.clientY;
+    setMousePosition({ x, y });
+    updateMaskPosition(x, y);
+  };
+  
+  const handleTouchEnd = () => {
+    if (!isMobile) return;
+    setIsTouching(false);
+    if (maskRef.current) {
+      gsap.to(maskRef.current, {
+        duration: 0.3,
+        ease: "back.out(1.7)",
+        css: {
+          WebkitMaskSize: `40px`,
+          maskSize: `40px`
         }
       });
     }
@@ -33,7 +97,10 @@ export default function Home() {
 
   return (
     <div 
+      data-touch-container
       onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{ 
         width: '100vw', 
         height: '100vh', 
@@ -65,7 +132,7 @@ export default function Home() {
         
         <div className={styles.body}>
           <p>
-          Wichtig für Ihren <span>digitalen Auftritt</span> sind Effekte und Animationen, die überzeugen.
+          Begeistern Sie Ihre Kunden durch starke Effekte und dynamische Animationen auf Ihrem <span>digitalen Auftritt</span>.
           </p>
         </div>
       </main>

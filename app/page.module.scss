@@ -52,4 +52,66 @@
         -webkit-mask-size: 60px 60px;
         color: black;
     }
+
+    
+}
+
+// Media Query für Tablets und kleine Bildschirme
+@media (max-width: 1000px) {
+    .main {
+        nav {
+            top: 15px;
+            left: 15px;
+            width: 80px;
+        }
+
+        .body, .mask {
+            font-size: 40px;
+            padding: 0 40px;
+
+            p {
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+    }
+}
+
+// Media Query für mobile Geräte
+@media (max-width: 768px) {
+    .main {
+        nav {
+            top: 10px;
+            left: 10px;
+            width: 60px;
+        }
+
+        .body, .mask {
+            font-size: 28px;
+            padding: 0 20px;
+
+            p {
+                width: 100%;
+            }
+        }
+
+        // Deaktiviere Mask-Effekt auf mobilen Geräten
+        .mask {
+            display: none;
+        }
+    }
+}
+
+// Media Query für sehr kleine Geräte
+@media (max-width: 480px) {
+    .main {
+        nav {
+            width: 50px;
+        }
+
+        .body {
+            font-size: 22px;
+            padding: 0 15px;
+        }
+    }
 }
